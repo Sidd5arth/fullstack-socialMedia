@@ -3,11 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.8.4",
+    "@supabase/auth-ui-react": "^0.4.5",
+    "@supabase/auth-ui-shared": "^0.1.7",
+    "@supabase/supabase-js": "^2.37.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/react-icons": "^3.0.0",
+    "@types/react-router": "^5.1.20",
+    "dotenv": "^16.3.1",
+    "graphql": "^16.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.46.2",
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^4.11.0",
+    "react-loader-spinner": "^5.4.5",
+    "react-router-dom": "^6.16.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -34,5 +48,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.5",
+    "@types/node": "^20.8.0",
+    "@types/react": "^18.2.23",
+    "@types/react-dom": "^18.2.8",
+    "supabase": "^1.99.5",
+    "tailwindcss": "^3.3.3"
+  },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": "^5.57.1",
+    "fork-ts-checker-webpack-plugin": "^6.5.3",
+    "typescript": "^5.0.3"
   }
 }
