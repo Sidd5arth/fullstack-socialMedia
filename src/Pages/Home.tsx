@@ -7,9 +7,8 @@ import useGraphQLQuery from "../hooks/useGraphQLQuery";
 import { useNavigate } from "react-router";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import SideNavBar from "../Components/SideNavBar";
-
-// import PostCard from '../Components/PostCard';
 import AppContext from "../context/app-context";
+
 type Props = {};
 export interface UserResponse {
   usersCollection: {

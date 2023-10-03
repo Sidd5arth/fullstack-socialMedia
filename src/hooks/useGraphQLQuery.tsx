@@ -6,7 +6,6 @@ interface GraphQLResponse<T> {
   data: T;
 }
 
-// Function to fetch data using a GraphQL query
 async function fetchData<T>(query: string): Promise<GraphQLResponse<T>> {
   const response = await fetch(
     "https://djstzjejdnfaizwrtinh.supabase.co/graphql/v1",
@@ -29,7 +28,6 @@ async function fetchData<T>(query: string): Promise<GraphQLResponse<T>> {
   return data;
 }
 
-// Custom hook for fetching data with GraphQL query
 function useGraphQLQuery<T>(query: string) {
   const [data, setData] = useState<GraphQLResponse<T> | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

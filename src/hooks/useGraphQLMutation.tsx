@@ -32,11 +32,7 @@ function useGraphQLMutation<T>() {
   const [mutationError, setMutationError] = useState<Error | null>(null);
 
   const executeMutation = async (mutation: string, variables: any) => {
-    if (!userData.user) {
-      // Handle user authentication here if needed
-      return;
-    }
-    // console.log(mutation, variables)
+
     setMutationLoading(true);
 
     try {

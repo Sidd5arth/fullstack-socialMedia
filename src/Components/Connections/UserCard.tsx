@@ -63,7 +63,6 @@ const UserCard: React.FC<Props> = ({
     const followerId = user_id;
 
     await executeMutation(mutation, { followerId, userId });
-    // Implement the logic for following the user here
   };
 
   const handleUnFollowClick = async () => {
@@ -90,17 +89,14 @@ const UserCard: React.FC<Props> = ({
     console.log(userId)
     console.log(followerId)
     await executeMutation(mutation, { followerId, userId });
-    // Implement the logic for following the user here
   };
 
   return (
     <div className="max-w-md mx-auto p-4 border border-gray-300 rounded-lg my-4 flex items-center justify-between">
       <div className="flex items-center">
-        {/* User Name */}
         <span className="text-gray-700 text-lg">@{username}</span>
       </div>
 
-      {/* Follow Button */}
       {type === "follow" && (
         <button
           className="bg-blue-500 text-white py-2 px-4 rounded-full"

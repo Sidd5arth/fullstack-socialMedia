@@ -3,7 +3,7 @@ import { UserResponse } from '../../Pages/Home';
 import { FaUser } from "react-icons/fa";
 
 interface Props {
-  profilePicture?: string; // URL of the profile picture
+  profilePicture?: string; 
   username?: string;
   followers?: number;
   follows?: number;
@@ -13,7 +13,6 @@ interface Props {
 const Profile: React.FC<Props> = ({ profilePicture, username, followers, follows, posts }) => {
   return (
     <div className="w-full mx-auto p-4 border border-gray-300 rounded-lg text-center">
-      {/* Profile Picture */}
       <div className="mb-4">
         <img
           src={profilePicture}
@@ -22,7 +21,6 @@ const Profile: React.FC<Props> = ({ profilePicture, username, followers, follows
         />
       </div>
 
-      {/* Username with "@" symbol */}
       <h2 className="text-xl font-semibold">
         <span>
           <FaUser className="inline-block mr-2 text-lg" />
@@ -30,7 +28,6 @@ const Profile: React.FC<Props> = ({ profilePicture, username, followers, follows
         @{username}
       </h2>
 
-      {/* Counts (Followers, Follows, Posts) */}
       <div className="flex justify-center mt-4">
         <div className="flex flex-col items-center mx-4">
           <span className="font-semibold">{followers}</span>

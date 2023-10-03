@@ -111,7 +111,6 @@ const AuthPage: React.FC = () => {
           },
         });
         if (!error) {
-          // Create the user in your database here
           const { data: createdUser, error: dbError } = await supabase
             .from("users")
             .insert([
