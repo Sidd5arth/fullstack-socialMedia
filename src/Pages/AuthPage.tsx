@@ -2,10 +2,11 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { createClient } from "@supabase/supabase-js";
-import toast, { Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import AppContext from "../context/app-context";
 import { useNavigate } from "react-router";
 import { Circles } from "react-loader-spinner";
+import { supabase } from "../SupabaseClient";
 
 interface FormData {
   loginEmail: string;
@@ -16,89 +17,135 @@ interface FormData {
   supabase: SupabaseClient;
 }
 interface UserData {
-  user: object;
-  session: object;
+  user: {
+    id: string | null;
+    user_metadata: {
+      first_name: string | null;
+    };
+  };
+  session: object | null;
 }
 
 const AuthPage: React.FC = () => {
-  const { userData, setUserData } = useContext(AppContext) as {
-    userData: UserData;
-    setUserData: React.Dispatch<React.SetStateAction<UserData>>;
-  };
-  const [isLoading, setIsLoading] = useState<boolean>();
-  const userInfo = useCallback(async () => {
-    if (
-      Object.keys(userData.user).length === 0 ||
-      Object.keys(userData.session).length === 0
-    ) {
-      navigate("/AuthPage", { replace: true });
-    } else {
-      navigate("/", { replace: true });
-    }
-  }, [userData.user, userData.session]);
-
-  useEffect(() => {
-    userInfo();
-  }, [userData]);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
-  const supaUrl = "https://djstzjejdnfaizwrtinh.supabase.co";
-  const supaKey =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqc3R6amVqZG5mYWl6d3J0aW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTYwMDMzOTYsImV4cCI6MjAxMTU3OTM5Nn0.VkydOrueYpqOv1SNcs4XQzlQ9ausb6wh2KaQIGBZ2jk";
-  const supabase = createClient(supaUrl, supaKey);
+
+  const { userData, setUserData } = useContext(AppContext) as {
+    userData: UserData;
+    setUserData: React.Dispatch<React.SetStateAction<UserData>>;
+  };
+
+  const [isLoading, setIsLoading] = useState<boolean>();
 
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
 
-  //this is a fuctionality which allows user to login without credential later
-  // they only need to sign-in one time
+  // useEffect(() => {
+  //   const {data:{subscription}} = supabase.auth.onAuthStateChange((event, session) => {
+  //     if (event === "SIGNED_OUT") {
+  //       navigate("/AuthPage", { replace: true });
+  //     }
+  //   });
 
-  // const storeSessionToLocalStorage = (session: any) => {
-  //   localStorage.setItem("supabaseSession", JSON.stringify(session));
-  // };
+  //       // Clean up the listener when the component unmounts
+  //       return () => {
+  //         subscription?.unsubscribe();
+  //       };
+  // }, []);
 
-  // const getSessionFromLocalStorage = () => {
-  //   const storedSession = localStorage.getItem("supabaseSession");
-  //   if (storedSession) {
-  //     return JSON.parse(storedSession);
-  //   }
-  //   return null;
-  // };
+  const checkAuthentication = useCallback(async () => {
+    console.log("checking, start");
+
+    if (
+      userData?.user.id ||
+      userData?.session ||
+      localStorage.getItem("supabaseSession")
+    ) {
+      if (!userData?.user?.id) {
+        const session = localStorage.getItem("supabaseSession");
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        console.log(user);
+        if (!user) {
+          localStorage?.removeItem("supabaseSession");
+          navigate("/", { replace: true });
+          return;
+        }
+        const token = { session: session };
+        setUserData({
+          user: {
+            id: user.id,
+            user_metadata: { first_name: user.user_metadata.first_name },
+          },
+          session: token,
+        });
+      } else {
+        navigate("/Home", { replace: true });
+      }
+    }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        localStorage.removeItem("supabaseSession");
+        navigate("/", { replace: true });
+        setUserData({
+          user: {
+            id: null,
+            user_metadata: {
+              first_name: null,
+            },
+          },
+          session: null,
+        });
+      }
+    });
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [userData.user.id, userData.session]);
+
+  checkAuthentication();
 
   // useEffect(() => {
-  //   const storedSession = getSessionFromLocalStorage();
-  //   if (storedSession) {
-  //     setUserData({ user: storedSession.user, session: storedSession.session });
-  //   }
-  // }, [setUserData]);
+  //   checkAuthentication();
+  // }, [checkAuthentication]);
 
   const onSubmit = async (val: FormData) => {
     try {
       setIsLoading(true);
+      localStorage.removeItem("supabaseSession");
       if (isLogin) {
         try {
           const { data, error } = await supabase.auth.signInWithPassword({
             email: val.loginEmail,
             password: val.loginPassword,
           });
+          console.log(data);
           if (data.user) {
+            localStorage.setItem("supabaseSession", data.session.access_token);
             setUserData({
-              user: data.user,
+              user: {
+                id: data.user.id,
+                user_metadata: {
+                  first_name: data.user.user_metadata.first_name,
+                },
+              },
               session: data.session,
             });
-            // storeSessionToLocalStorage(data.session);
             toast.success("Logged in!");
-            navigate("/", { replace: true });
+            navigate("/Home", { replace: true });
+            setIsLogin(false);
           } else {
             toast.error("Invalid details Please Register or try again");
             setIsLogin(false);
           }
         } catch (err) {
-          toast.success("somthing went wrong!");
+          toast.error("somthing went wrong!");
         }
       } else {
         const { data, error } = await supabase.auth.signUp({
@@ -135,8 +182,7 @@ const AuthPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md my-40 mx-auto p-12 transition-all ms-0.3 ease-in-out border-2 rounded-lg">
-      <Toaster />
+    <div className="max-w-md z-20 my-40 mx-auto p-12 transition-all ms-0.3 ease-in-out border-2 border-white rounded-lg bg-gray-50 bg-opacity-50 shadow-lg">
       <div className="flex justify-center mb-4 w-full transition-all ms-0.3 ease-in-out">
         <button
           className={`w-full py-2 px-4 rounded-tl-lg transition-all ms-0.3 ease-in-out ${
@@ -165,7 +211,11 @@ const AuthPage: React.FC = () => {
             type="text"
             id="email"
             placeholder="Email"
-            className="w-full border border-gray-300 rounded-lg p-2"
+            className={`w-full border-2 border-white bg-gray-50 bg-opacity-50 rounded-lg p-2 ${
+              errors[isLogin ? "loginEmail" : "registerEmail"]
+                ? "border-red-500"
+                : ""
+            }`}
             {...register(isLogin ? "loginEmail" : "registerEmail", {
               required: true,
               pattern: /^\S+@\S+$/i,
@@ -178,14 +228,18 @@ const AuthPage: React.FC = () => {
             type="password"
             id="password"
             placeholder="Password"
-            className="w-full border border-gray-300 rounded-lg p-2"
+            className={`w-full border-2 border-white bg-gray-50 bg-opacity-50 rounded-lg p-2 ${
+              errors[isLogin ? "loginPassword" : "registerPassword"]
+                ? "border-red-500"
+                : ""
+            }`}
             {...register(isLogin ? "loginPassword" : "registerPassword", {
               required: true,
               minLength: 6,
             })}
           />
           {errors[isLogin ? "loginPassword" : "registerPassword"] && (
-            <p className="text-red-500">
+            <p className="text-red-500 text-sm">
               Password must be at least 6 characters long
             </p>
           )}
@@ -195,21 +249,23 @@ const AuthPage: React.FC = () => {
               type="text"
               id="username"
               placeholder="Username"
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className={`w-full border-2 border-white bg-gray-50 bg-opacity-50 rounded-lg p-2 ${
+                errors[isLogin ? "loginPassword" : "registerPassword"]
+                  ? "border-red-500"
+                  : ""
+              }`}
               {...register("registerUsername", { required: true })}
             />
           )}
 
           {isLoading ? (
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center"
-            >
+            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center shadow-lg shadow-blue-200">
               <Circles color="white" width={"24px"} height={"24px"} />
             </button>
           ) : (
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
+              className="border-2 border-blue-300 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-lg shadow-blue-200"
             >
               {isLogin ? "Login" : "Register"}
             </button>

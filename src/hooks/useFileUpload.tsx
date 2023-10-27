@@ -20,7 +20,7 @@ function useFileUpload() {
         .from(bucketName)
         .upload(filePath, file);
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
 
     const { data } = supabase.storage

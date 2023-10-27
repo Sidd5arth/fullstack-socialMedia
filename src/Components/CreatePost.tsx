@@ -154,18 +154,18 @@ const CreatePost: React.FC<PostProps> = ({
   };
 
   return (
-    <div className="w-full mx-auto p-4 border border-gray-300 rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4">Create a Post</h2>
+    <div className="w-full mx-auto p-4 border-2 border-white rounded-lg bg-gray-50 bg-opacity-70 shadow-lg shadow-gray-200">
+      <h2 className="text-xl font-semibold mb-4">Create a Post</h2>
       {/* Text input area */}
       <textarea
-        className="resize-none w-full h-20 border border-gray-300 rounded-lg p-2 mb-4"
+        className="resize-none w-full h-20 p-2 mb-4 border-2 border-white bg-gray-50 bg-opacity-50 rounded-lg shadow-md shadow-gray-200"
         placeholder="Write your post..."
         onChange={(e) => handleTextArea(e.target.value)}
       ></textarea>
       {!mutationLoading ? (
         <div
           ref={imageContainerRef}
-          className={`flex justify-center items-center mb-4 h-80 bg-cover bg-center cursor-pointer ${
+          className={`flex justify-center w-full items-center mb-4 h-80 bg-cover bg-center cursor-pointer bg-gray-50 bg-opacity-50 rounded-lg shadow-md ${
             !image ? "border-2 border-dotted border-gray-500" : ""
           }`}
           onDragOver={handleDragOver}
@@ -178,7 +178,7 @@ const CreatePost: React.FC<PostProps> = ({
           }}
         >
           {!image && (
-            <div className="flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center justify-center ">
               <IoIosAddCircle className="text-3xl text-gray-500" />
               <p className="text-gray-500 w-80 text-center p-2">
                 Drag & Drop an image here or click to select one
@@ -200,7 +200,7 @@ const CreatePost: React.FC<PostProps> = ({
       />
       <div className="flex justify-between items-center mb-4">
         <button
-          className="text-sm w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mr-4"
+          className="text-sm w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mr-4 shadow-lg shadow-gray-300 border-2 border-blue-300"
           onClick={() => setIsTagModalOpen(true)}
         >
           Tag
@@ -214,7 +214,7 @@ const CreatePost: React.FC<PostProps> = ({
         />
       )}
         <button
-          className="text-sm w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
+          className="text-sm w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-lg shadow-gray-300 border-2 border-blue-300"
           onClick={handlePostSubmit}
         >
           {isUploading ? (

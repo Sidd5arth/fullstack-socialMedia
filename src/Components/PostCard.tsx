@@ -16,9 +16,17 @@ const PostCard: React.FC<Props> = ({ imageSrc, caption, likes, taggedUsers }) =>
   const [isLiked, setIsLiked] = useState(false);
 
   return (
-    <div className="max-w-lg mx-auto p-4 border border-gray-300 rounded-lg my-4">
-      {imageSrc && <img src={imageSrc} alt="Post" className="w-full rounded-lg mb-2" />}
-      <p className="text-gray-700 mb-2">{caption}</p>
+    <div className="w-full mx-auto p-4 border-2 rounded-lg my-4">
+      <div className='flex-col'>
+      <div className='flex h-full gap-9'>
+       {imageSrc && <img src={imageSrc} alt="Post" className="w-10 h-10 rounded-lg mb-2" />}
+       <p className="text-gray-700 mb-2">{caption}</p>
+      </div>
+      <div className='flex'>
+      <div className='w-20 h-full'></div>
+      {imageSrc && <img src={imageSrc} alt="Post" className="w-80 rounded-lg mb-2" />}
+      </div>
+      </div>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center">
           {isLiked ? (

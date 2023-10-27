@@ -12,17 +12,21 @@ interface Dimensions {
 
 interface UserData {
   user: {
-    id: string;
-  }
-  session: object;
+    id: string|null;
+    user_metadata: {
+      first_name: string|null;
+    };
+  };
+  session: object | null;
 }
 
 const AppContextProvider: React.FC<AppContextProviderProps> = ({ children}) => {
   const [userData, setUserData] = useState<UserData>({
-    user: {id:""},
-    session:{}
+    user: {id:null, user_metadata:{first_name:null}},
+    session: null
   });
   const [followData, setFollowData] = useState<{user_id:string|""; username:string|""}[]>([]);
+  const [followersData, setFollowersData] = useState<{user_id:string|""; username:string|""}[]>([]);
   const [dimensions, setDimensions] = useState<Dimensions>({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -50,7 +54,9 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children}) => {
         userData,
         setUserData,
         followData,
-        setFollowData
+        setFollowData,
+        followersData,
+        setFollowersData
       }}
     >
     {children}

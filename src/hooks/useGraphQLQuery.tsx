@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { Database } from "../supabase";
+import { supabase } from "../SupabaseClient";
 import AppContext from "../context/app-context";
 
 interface GraphQLResponse<T> {
@@ -51,9 +51,9 @@ function useGraphQLQuery<T>(query: string) {
         });
     }
   }, [query]);
-  console.log(data);
-  console.log(loading);
-  console.log(error);
+  // console.log(data);
+  // console.log(loading);
+  // console.log(error);
   return { data, loading, error };
 }
 

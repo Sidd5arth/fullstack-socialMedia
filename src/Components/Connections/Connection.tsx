@@ -19,7 +19,7 @@ export interface FollowersResponse {
   };
 }
 const Connection: React.FC<Connection> = ({ allUserData }) => {
-  const { userData, setFollowData } = useContext(AppContext);
+  const { userData, setFollowData, setFollowersData } = useContext(AppContext);
   const [showFollowers, setShowFollowers] = useState(true);
   const [showFollows, setShowFollows] = useState(false);
   const [showAllUsers, setShowAllUsers] = useState(false);
@@ -94,6 +94,9 @@ const Connection: React.FC<Connection> = ({ allUserData }) => {
       setFollowerData(
         filteredFollowerData as { user_id: string; username: string }[]
       );
+      setFollowersData(
+        filteredFollowerData as { user_id: string; username: string }[]
+      );
 
       const filteredFollowsData = followsArray.map((follows) => {
         const matchedUser = allUserData.find(
@@ -137,34 +140,34 @@ const Connection: React.FC<Connection> = ({ allUserData }) => {
   };
 
   return (
-    <div className="w-full mx-auto p-4 border border-gray-300 rounded-lg my-4 text-center">
+    <div className="w-full text-sm mx-auto p-4 border-2 my-4 text-center border-white rounded-lg bg-gray-50 bg-opacity-70 shadow-lg shadow-gray-200">
       <div className="max-w-md mx-auto">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between gap-3 mb-3 items-center rounded-lg">
           <button
-            className={`w-1/3 py-2 ${
+            className={`w-1/3 py-2 rounded-lg ${
               showAllUsers
-                ? "bg-blue-500 text-white"
-                : "bg-gray-300 text-gray-700"
+                ? "bg-blue-500 text-white text-sm shadow-lg shadow-blue-200 border-2 border-blue-400 hover:border-blue-400 transition-all"
+                : "bg-gray-200 text-gray-700 border-2 border-gray-300"
             }`}
             onClick={toggleAllUsers}
           >
             All Users
           </button>
           <button
-            className={`w-1/3 py-2 ${
+            className={`w-1/3 py-2 rounded-lg ${
               showFollowers
-                ? "bg-blue-500 text-white"
-                : "bg-gray-300 text-gray-700"
+                ? "bg-blue-500 text-white text-sm shadow-lg shadow-blue-200 border-2 border-blue-400 hover:border-blue-400 transition-all"
+                : "bg-gray-200 text-gray-700 border-2 border-gray-300"
             }`}
             onClick={toggleFollowers}
           >
             Followers
           </button>
           <button
-            className={`w-1/3 py-2 ${
+            className={`w-1/3 py-2 rounded-lg ${
               showFollows
-                ? "bg-blue-500 text-white"
-                : "bg-gray-300 text-gray-700"
+                ? "bg-blue-500 text-white text-sm shadow-lg shadow-blue-200 border-2 border-blue-400 hover:border-blue-400 transition-all"
+                : "bg-gray-200 text-gray-700 border-2 border-gray-300"
             }`}
             onClick={toggleFollows}
           >
@@ -173,7 +176,11 @@ const Connection: React.FC<Connection> = ({ allUserData }) => {
         </div>
         {showAllUsers ? (
           <div className="w-full min-h-min">
-            <div className="max-h-[320px] overflow-y-auto scroll-smooth">
+            <div className="max-h-[320px] overflow-y-auto scroll-smooth" style={{
+            scrollbarWidth:"thin",
+            scrollbarColor: "#dddddd #ffffff",
+            scrollBehavior: "smooth",
+        }}>
               {allUserData.map((item) => {
                 const isFollowing = followsData.some(
                   (follow) => follow.user_id === item.node.user_id
