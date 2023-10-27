@@ -1,4 +1,4 @@
-# CHECK the lIVE APP with this credential or register.
+# CHECK the LIVE APP with this credential or register.
 ## EMAIL - abc@gmail.com 
 
 ## PASSWORD - abcgamil
