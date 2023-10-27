@@ -1,7 +1,7 @@
 # CHECK the lIVE APP with this credential or register.
 ## EMAIL - abc@gmail.com 
 
-##PASSWORD - abcgamil
+## PASSWORD - abcgamil
 
 # Getting Started with Create React App
 
