@@ -38,10 +38,8 @@ function useGraphQLMutation<T>() {
     try {
       const queryResult = await fetchData<T>(mutation, variables);
       setMutationData(queryResult.data);
-      // console.log(queryResult.data)
       setMutationLoading(false);
     } catch (error) {
-      // console.log(error)
       setMutationLoading(false);
     }
   };

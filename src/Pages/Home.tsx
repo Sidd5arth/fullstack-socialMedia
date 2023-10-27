@@ -62,10 +62,8 @@ const Home = (props: Props) => {
       navigate("/", { replace: true });
     }
   }, [userData]);
-  console.log(userData);
 
   const toggleSidebar = () => {
-    console.log(isOpen);
     setIsOpen(!isOpen);
   };
 
@@ -124,8 +122,6 @@ const Home = (props: Props) => {
     loading: loading2,
     error: error2,
   } = useGraphQLQuery<PostResponse>(query2);
-  console.log(data?.data);
-  console.log(data2?.data);
 
   useEffect(() => {
     if (data) {
@@ -148,7 +144,6 @@ const Home = (props: Props) => {
 
   useEffect(() => {
     if (postData?.[0]) {
-      console.log(postData);
       const newPostNode = {
         node: {
           content: postData[0].content || "",
@@ -170,7 +165,6 @@ const Home = (props: Props) => {
     let { error } = await supabase.auth.signOut();
     localStorage.removeItem("supabaseSession");
     navigate("/", { replace: true });
-    console.log(error);
     setUserData({
       user: {
         id: null,
@@ -180,10 +174,10 @@ const Home = (props: Props) => {
       },
       session: null,
     });
+    if(error){
+      
+    }
   };
-
-  console.log(allPostData);
-  console.log(allUserData);
 
   return (
     <>

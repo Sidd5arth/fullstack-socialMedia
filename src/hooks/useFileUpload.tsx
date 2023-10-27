@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { toast } from "react-hot-toast";
 
 const supabase = createClient(
   "https://djstzjejdnfaizwrtinh.supabase.co/",
@@ -20,7 +21,7 @@ function useFileUpload() {
         .from(bucketName)
         .upload(filePath, file);
     } catch (error) {
-      // console.log(error)
+      toast.error("Invalid details Please Register or try again");
     }
 
     const { data } = supabase.storage

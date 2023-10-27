@@ -118,9 +118,6 @@ const Connection: React.FC<Connection> = ({ allUserData }) => {
     }
   }, [data]);
 
-  console.log(followerData);
-  console.log(followsData);
-
   const toggleFollowers = () => {
     setShowFollowers(true);
     setShowFollows(false);

@@ -1,7 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { createClient } from "@supabase/supabase-js";
 import { toast } from "react-hot-toast";
 import AppContext from "../context/app-context";
 import { useNavigate } from "react-router";
@@ -57,8 +56,6 @@ const AuthPage: React.FC = () => {
   // }, []);
 
   const checkAuthentication = useCallback(async () => {
-    console.log("checking, start");
-
     if (
       userData?.user.id ||
       userData?.session ||
@@ -69,7 +66,6 @@ const AuthPage: React.FC = () => {
         const {
           data: { user },
         } = await supabase.auth.getUser();
-        console.log(user);
         if (!user) {
           localStorage?.removeItem("supabaseSession");
           navigate("/", { replace: true });
@@ -125,7 +121,6 @@ const AuthPage: React.FC = () => {
             email: val.loginEmail,
             password: val.loginPassword,
           });
-          console.log(data);
           if (data.user) {
             localStorage.setItem("supabaseSession", data.session.access_token);
             setUserData({

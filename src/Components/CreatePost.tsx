@@ -95,10 +95,6 @@ const CreatePost: React.FC<PostProps> = ({
           ...prevData,
         ];
       });
-      console.log(
-        "Mutation data updated:",
-        mutationData.insertIntopostsCollection.records[0]
-      );
     }
   }, [mutationData]);
 
@@ -121,7 +117,6 @@ const CreatePost: React.FC<PostProps> = ({
           }
         `;
 
-        console.log(uploadResponse);
         const userId = userData.user.id;
         const content = postText;
         const imageUrl = uploadResponse;
@@ -129,7 +124,6 @@ const CreatePost: React.FC<PostProps> = ({
         await executeMutation(mutation, { userId, content, imageUrl });
         setImage(null);
         setPostText("");
-        console.log("Mutation data updated:", uploadResponse);
       }
     };
 
@@ -141,7 +135,6 @@ const CreatePost: React.FC<PostProps> = ({
       return;
     }
     if (image) {
-      console.log("settingImg");
       const bucketName = "socialmedia-content";
       const filePath = `posts/${image.name}`;
       await uploadFile(bucketName, filePath, image);
@@ -156,7 +149,6 @@ const CreatePost: React.FC<PostProps> = ({
   return (
     <div className="w-full mx-auto p-4 border-2 border-white rounded-lg bg-gray-50 bg-opacity-70 shadow-lg shadow-gray-200">
       <h2 className="text-xl font-semibold mb-4">Create a Post</h2>
-      {/* Text input area */}
       <textarea
         className="resize-none w-full h-20 p-2 mb-4 border-2 border-white bg-gray-50 bg-opacity-50 rounded-lg shadow-md shadow-gray-200"
         placeholder="Write your post..."

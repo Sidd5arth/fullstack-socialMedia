@@ -32,28 +32,25 @@ function useGraphQLQuery<T>(query: string) {
   const [data, setData] = useState<GraphQLResponse<T> | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const {userData} = useContext(AppContext)
-
+  const { userData } = useContext(AppContext);
 
   useEffect(() => {
-    if(userData.user && query){
+    if (userData.user && query) {
       fetchData<T>(query)
-      .then((result) => {
-        setData((prevData) => ({
-          ...prevData,
-          data: result.data,
-        }));
-        setLoading(false);
-      })
+        .then((result) => {
+          setData((prevData) => ({
+            ...prevData,
+            data: result.data,
+          }));
+          setLoading(false);
+        })
         .catch((err) => {
           setError(err);
           setLoading(false);
         });
     }
   }, [query]);
-  // console.log(data);
-  // console.log(loading);
-  // console.log(error);
+
   return { data, loading, error };
 }
 

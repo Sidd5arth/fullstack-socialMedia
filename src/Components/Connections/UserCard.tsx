@@ -36,9 +36,6 @@ const UserCard: React.FC<Props> = ({
   const { userData } = useContext(AppContext);
   const { mutationData, mutationLoading, mutationError, executeMutation } =
     useGraphQLMutation<FollowMutate>();
-  useEffect(() => {
-    console.log("mutDataPost", mutationData);
-  }, [mutationData]);
 
   const handleFollowClick = async () => {
     const cardSelect = {
@@ -86,34 +83,41 @@ const UserCard: React.FC<Props> = ({
 
     const userId = userData.user.id;
     const followerId = user_id;
-    console.log(userId);
-    console.log(followerId);
+
     await executeMutation(mutation, { followerId, userId });
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 my-2 flex items-center justify-between border-2 border-white bg-gray-50 bg-opacity-50 rounded-lg shadow-md shadow-gray-200 ">
-      <div className="flex items-center">
-        <span className="text-gray-700 text-md">@{username}</span>
-      </div>
+    <>
+      {mutationLoading ? (
+        <div className="max-w-md mx-auto p-4 my-2 flex items-center justify-between border-2 border-white bg-gray-50 bg-opacity-50 rounded-lg shadow-md shadow-gray-200 ">
+          Loading...
+        </div>
+      ) : (
+        <div className="max-w-md mx-auto p-4 my-2 flex items-center justify-between border-2 border-white bg-gray-50 bg-opacity-50 rounded-lg shadow-md shadow-gray-200 ">
+          <div className="flex items-center">
+            <span className="text-gray-700 text-md">@{username}</span>
+          </div>
 
-      {type === "follow" && (
-        <button
-          className="bg-blue-500 text-white py-2 px-4 rounded-lg w-32 text-sm shadow-lg shadow-blue-200 border-2 border-blue-300 hover:border-blue-500 transition-all"
-          onClick={handleFollowClick}
-        >
-          Follow
-        </button>
+          {type === "follow" && (
+            <button
+              className="bg-blue-500 text-white py-2 px-4 rounded-lg w-32 text-sm shadow-lg shadow-blue-200 border-2 border-blue-300 hover:border-blue-500 transition-all"
+              onClick={handleFollowClick}
+            >
+              Follow
+            </button>
+          )}
+          {type === "unfollow" && (
+            <button
+              className=" text-white bg-red-400 py-2 px-4 rounded-lg w-32 text-sm shadow-lg shadow-red-200 border-2 border-red-300 hover:border-red-400 transition-all"
+              onClick={handleUnFollowClick}
+            >
+              Unfollow
+            </button>
+          )}
+        </div>
       )}
-      {type === "unfollow" && (
-        <button
-          className=" text-white bg-red-400 py-2 px-4 rounded-lg w-32 text-sm shadow-lg shadow-red-200 border-2 border-red-300 hover:border-red-400 transition-all"
-          onClick={handleUnFollowClick}
-        >
-          Unfollow
-        </button>
-      )}
-    </div>
+    </>
   );
 };
 
