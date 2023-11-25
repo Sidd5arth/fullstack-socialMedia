@@ -1,3 +1,8 @@
+# CHECK the LIVE APP with this credential or register.
+## EMAIL - abc@gmail.com 
+
+## PASSWORD - abcgamil
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
