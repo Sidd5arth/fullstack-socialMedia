@@ -32,7 +32,7 @@ function useGraphQLMutation<T>() {
   const [mutationError, setMutationError] = useState<Error | null>(null);
 
   const executeMutation = async (mutation: string, variables: any) => {
-
+    console.log(mutation, variables)
     setMutationLoading(true);
 
     try {

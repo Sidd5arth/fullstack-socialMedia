@@ -1,11 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import UserCard from "./UserCard";
+import AppContext from "../../context/app-context";
 
 interface FollowersProps {
-  followerData: {
-    user_id: string | "";
-    username: string | "";
-  }[];
   setSelectedCard: React.Dispatch<
     React.SetStateAction<
       | {
@@ -19,9 +16,9 @@ interface FollowersProps {
 }
 
 const Followers: React.FC<FollowersProps> = ({
-  followerData,
   setSelectedCard,
 }) => {
+  const { followersData } = useContext(AppContext);
   return (
     <div
       className="max-h-[320px] overflow-y-auto scroll-smooth"
@@ -31,12 +28,13 @@ const Followers: React.FC<FollowersProps> = ({
         scrollBehavior: "smooth",
       }}
     >
-      {followerData.map((item) => (
+      {followersData.map((item) => (
         <UserCard
           key={item.user_id}
           user_id={item.user_id}
           username={item.username}
           setSelectedCard={setSelectedCard}
+          relationship_id={item.relationship_id}
           type="remove"
         />
       ))}

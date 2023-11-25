@@ -2,25 +2,21 @@ import React from 'react';
 import { RiHome2Line, RiArticleLine, RiInformationLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router';
 
-interface SideNavBarProps {
-  smallScreen: boolean;
-}
-
-const SideNavBar: React.FC<SideNavBarProps> = ({smallScreen }) => {
+const SideNavBar: React.FC = () => {
 const navigate = useNavigate();
 const handleNavigation = (path: string) => {
   navigate(path);
 };
   return (
-    <nav className={"fixed inset-y-0 left-0 bg-opacity-50 w-1/4 transform" }>
-      <ul className="flex flex-col gap-4 p-4 mt-10">
-        <li onClick={() => handleNavigation("/")} className="text-sm hover:text-blue-500 cursor-pointer">
+    <nav style={{zIndex:"100"}} className={"absolute w-60 rounded-lg border-white border shadow-lg bg-blue-100 transform bottom-8 left-24 bg-opacity-50 backdrop-blur-md" }>
+      <ul className="flex gap-8 p-2 justify-center align-middle ">
+        <li onClick={() => handleNavigation("/Home")} className="text-sm hover:text-white cursor-pointer p-2 bg-opacity-50 hover:bg-blue-500 rounded-lg transition-all">
           <RiHome2Line size={18} />
         </li>
-        <li onClick={() => handleNavigation("/Posts")} className="text-sm hover:text-blue-500 cursor-pointer">
+        <li onClick={() => handleNavigation("/Post")} className="text-sm hover:text-white cursor-pointer p-2 bg-opacity-50 hover:bg-blue-500 rounded-lg transition-all">
           <RiArticleLine size={18} />
         </li>
-        <li onClick={() => handleNavigation("/Profile")} className="text-sm hover:text-blue-500 cursor-pointer">
+        <li onClick={() => handleNavigation("/Profile")} className="text-sm hover:text-white cursor-pointer p-2 bg-opacity-50 hover:bg-blue-500 rounded-lg transition-all">
           <RiInformationLine size={18} />
         </li>
       </ul>

@@ -3,35 +3,33 @@ import Followers from "./Followers";
 import Follows from "./Follows";
 import UserCard from "./UserCard";
 import AppContext from "../../context/app-context";
-import { UserResponse } from "../../Pages/Home";
 import useGraphQLQuery from "../../hooks/useGraphQLQuery";
-interface Connection {
-  allUserData: UserResponse["usersCollection"]["edges"] | [];
-}
+
 export interface FollowersResponse {
   followersCollection: {
     edges: {
       node: {
         user_id: string;
         follower_id: string;
+        relationship_id: string;
       };
     }[];
   };
 }
-const Connection: React.FC<Connection> = ({ allUserData }) => {
-  const { userData, setFollowData, setFollowersData } = useContext(AppContext);
+const Connection: React.FC = () => {
+  const { userData, setFollowData, setFollowersData, allUserData, followData, followersData } = useContext(AppContext);
   const [showFollowers, setShowFollowers] = useState(true);
   const [showFollows, setShowFollows] = useState(false);
   const [showAllUsers, setShowAllUsers] = useState(false);
   const [selectedCard, setSelectedCard] = useState<
-    { user_id: string | ""; username: string | ""; type:string } | {}
+    { user_id: string | ""; username: string | ""; relationship_id: string | ""; type:string } | {}
   >();
-  const [followerData, setFollowerData] = useState<
-    { user_id: string | ""; username: string | "" }[]
-  >([]);
-  const [followsData, setFollowsData] = useState<
-    { user_id: string | ""; username: string | "" }[]
-  >([]);
+  // const [followerData, setFollowerData] = useState<
+  //   { user_id: string | ""; username: string | "" }[]
+  // >([]);
+  // const [followsData, setFollowsData] = useState<
+  //   { user_id: string | ""; username: string | "" }[]
+  // >([]);
   const [allFollowerData, setAllFollowerData] = useState<
     FollowersResponse["followersCollection"]["edges"] | []
   >([]);
@@ -41,6 +39,7 @@ const Connection: React.FC<Connection> = ({ allUserData }) => {
     followersCollection {
       edges {
         node {
+          relationship_id
           user_id
           follower_id
         }
@@ -49,71 +48,73 @@ const Connection: React.FC<Connection> = ({ allUserData }) => {
   }
 `;
   const { data, loading, error } = useGraphQLQuery<FollowersResponse>(query);
-  // console.log(data)
+  console.log(data)
   useEffect(()=>{
     if(selectedCard && ('type' in selectedCard)){
       if(selectedCard.type === "follow"){
         const newCard = {
           user_id: selectedCard.user_id,
-          username: selectedCard.username
+          username: selectedCard.username,
+          relationship_id: selectedCard.relationship_id
         }
-        setFollowsData((prev) => [newCard, ...prev])
+        setFollowData((prev) => [newCard, ...prev])
       }
       if (selectedCard.type === "unfollow") {
         const newCard = {
           user_id: selectedCard.user_id,
-          username: selectedCard.username
+          username: selectedCard.username,
+          relationship_id: selectedCard.relationship_id
         };
-        setFollowsData(prev => prev.filter(card => card.user_id !== newCard.user_id));
+        setFollowData(prev => prev.filter(card => card.user_id !== newCard.user_id));
       }
     }
   }, [selectedCard])
   useEffect(() => {
     if (data) {
       const allData = data.data.followersCollection.edges;
+      console.log(allData)
       setAllFollowerData(allData);
       let followerArray = [];
       let followsArray = [];
       for (const item of allData) {
         if (item.node.user_id === userData.user.id) {
-          followsArray.push(item.node.follower_id);
+          followsArray.push({follower_id: item.node.follower_id, relationship_id: item.node.relationship_id});
         } else if (item.node.follower_id === userData.user.id) {
-          followerArray.push(item.node.user_id);
+          followerArray.push({user_id: item.node.user_id, relationship_id: item.node.relationship_id});
         }
       }
+      console.log(followsArray)
+      console.log(followerArray)
       const filteredFollowerData = followerArray.map((follower) => {
         const matchedUser = allUserData.find(
-          (user) => user.node.user_id === follower
+          (user) => user.node.user_id === follower.user_id
         );
         const followerobj = {
           user_id: matchedUser?.node.user_id,
           username: matchedUser?.node.username,
+          relationship_id: follower.relationship_id,
         };
         return followerobj;
       });
-      setFollowerData(
-        filteredFollowerData as { user_id: string; username: string }[]
-      );
+
       setFollowersData(
-        filteredFollowerData as { user_id: string; username: string }[]
+        filteredFollowerData as { user_id: string; username: string; relationship_id: string }[]
       );
 
       const filteredFollowsData = followsArray.map((follows) => {
         const matchedUser = allUserData.find(
-          (user) => user.node.user_id === follows
+          (user) => user.node.user_id === follows.follower_id
         );
         const followerobj = {
           user_id: matchedUser?.node.user_id,
           username: matchedUser?.node.username,
+          relationship_id: follows.relationship_id,
         };
         return followerobj;
       });
 
-      setFollowsData(
-        filteredFollowsData as { user_id: string; username: string }[]
-      );
       setFollowData(
-        filteredFollowsData as { user_id: string; username: string }[]
+        filteredFollowsData as { user_id: string; username: string; relationship_id: string }[]
       )
     }
   }, [data]);
@@ -137,7 +138,7 @@ const Connection: React.FC<Connection> = ({ allUserData }) => {
   };
 
   return (
-    <div className="w-full text-sm mx-auto p-4 border-2 my-4 text-center border-white rounded-lg bg-gray-50 bg-opacity-70 shadow-lg shadow-gray-200">
+    <div className="w-full text-sm mx-auto p-4 my-1 text-center border border-grey-800 bg-gray-50 bg-opacity-70 shadow-lg shadow-gray-200">
       <div className="max-w-md mx-auto">
         <div className="flex justify-between gap-3 mb-3 items-center rounded-lg">
           <button
@@ -179,14 +180,21 @@ const Connection: React.FC<Connection> = ({ allUserData }) => {
             scrollBehavior: "smooth",
         }}>
               {allUserData.map((item) => {
-                const isFollowing = followsData.some(
-                  (follow) => follow.user_id === item.node.user_id
+                console.log(followData);
+                let realtionID = "";
+                const isFollowing = followData.some((follow) => {
+                  if(follow.user_id === item.node.user_id){
+                    realtionID = follow.relationship_id;
+                    return true;
+                  }else return false;
+                }
                 );
                 const type = isFollowing ? "unfollow" : "follow";
                 return (
                   <UserCard
                     key={item.node.user_id}
                     user_id={item.node.user_id}
+                    relationship_id={realtionID}
                     username={item.node.username}
                     setSelectedCard={setSelectedCard}
                     type={type} 
@@ -198,13 +206,11 @@ const Connection: React.FC<Connection> = ({ allUserData }) => {
         ) : null}
         {showFollowers ? (
           <Followers
-            followerData={followerData}
             setSelectedCard={setSelectedCard}
           />
         ) : null}
         {showFollows ? (
           <Follows
-            followsData={followsData}
             setSelectedCard={setSelectedCard}
           />
         ) : null}

@@ -4,12 +4,14 @@ import useGraphQLMutation from "../../hooks/useGraphQLMutation";
 interface Props {
   username: string;
   user_id: string;
+  relationship_id: string;
   type: string;
   setSelectedCard: React.Dispatch<
     React.SetStateAction<
       | {
           user_id: string;
           username: string;
+          relationship_id?: string;
           type: string;
         }
       | ""
@@ -30,6 +32,7 @@ interface FollowMutate {
 const UserCard: React.FC<Props> = ({
   username,
   user_id,
+  relationship_id,
   setSelectedCard,
   type,
 }) => {
@@ -58,7 +61,7 @@ const UserCard: React.FC<Props> = ({
 
     const userId = userData.user.id;
     const followerId = user_id;
-
+ 
     await executeMutation(mutation, { followerId, userId });
   };
 
@@ -69,13 +72,15 @@ const UserCard: React.FC<Props> = ({
       type: "unfollow",
     };
     setSelectedCard(cardSelect);
+    console.log(relationship_id)
+    console.log(userData.user.id)
+    console.log(user_id)
     const mutation = `
     mutation DeleteFollower($filter: followersFilter!) {
       deleteFromfollowersCollection(filter: $filter, atMost: 1) {
         affectedCount
         records {
-          follower_id
-          user_id
+          relationship_id
         }
       }
     }
@@ -83,8 +88,9 @@ const UserCard: React.FC<Props> = ({
 
     const userId = userData.user.id;
     const followerId = user_id;
+    const relationshipId = relationship_id;
 
-    await executeMutation(mutation, { followerId, userId });
+    await executeMutation(mutation, { userId, followerId, relationshipId });
   };
 
   return (

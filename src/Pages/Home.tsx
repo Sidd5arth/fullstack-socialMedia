@@ -9,47 +9,24 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import SideNavBar from "../Components/SideNavBar";
 import AppContext from "../context/app-context";
 import { supabase } from "../SupabaseClient";
+import { PostResponse, UserResponse } from "../types";
+import { Circles } from "react-loader-spinner";
 
-type Props = {};
-export interface UserResponse {
-  usersCollection: {
-    edges: {
-      node: {
-        user_id: string;
-        username: string;
-      };
-    }[];
-  };
-}
+const Home = () => {
+  const {
+    userData,
+    followData,
+    dimensions,
+    setUserData,
+    allPostData,
+    setAllPostData,
+    allUserData,
+    setAllUserData,
+  } = useContext(AppContext);
 
-interface PostResponse {
-  postsCollection: {
-    edges: {
-      node: {
-        content: string;
-        created_at: string;
-        image_url: string;
-        post_id: string;
-        user_id: string;
-      };
-    }[];
-  };
-}
-
-const Home = (props: Props) => {
-  const [postData, setPostData] = useState<
-    {
-      content: string | "";
-      created_at: string | "";
-      image_url: string | "";
-      post_id: string | "";
-      user_id: string | "";
-    }[]
-  >([]);
   const [imageUrl, setImageUrl] = useState<string>();
+  const [isOpenPost, setIsOpenPost] = useState(false);
   const [loadingHome, setLoadingHome] = useState<boolean>(false);
-  const { userData, followData, dimensions, setUserData } =
-    useContext(AppContext);
   const [postCount, setPostCount] = useState<number>(0);
   const [smallScreen, setSmallScreen] = useState<boolean>(
     dimensions.width < 600
@@ -63,9 +40,6 @@ const Home = (props: Props) => {
     }
   }, [userData]);
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
 
   useEffect(() => {
     if (dimensions.width < 600) {
@@ -80,13 +54,6 @@ const Home = (props: Props) => {
       setIsOpen(false);
     }
   }, [smallScreen, isOpen]);
-
-  const [allUserData, setAllUserData] = useState<
-    UserResponse["usersCollection"]["edges"] | []
-  >([]);
-  const [allPostData, setAllPostData] = useState<
-    PostResponse["postsCollection"]["edges"] | []
-  >([]);
 
   const query = `
     {
@@ -116,21 +83,25 @@ const Home = (props: Props) => {
   }
   `;
 
-  const { data, loading, error } = useGraphQLQuery<UserResponse>(query);
   const {
-    data: data2,
-    loading: loading2,
-    error: error2,
+    data: resposeUserData,
+    loading: userResponseLoader,
+    error: userResposeError,
+  } = useGraphQLQuery<UserResponse>(query);
+  const {
+    data: resposePostData,
+    loading: postResponseLoader,
+    error: postResposeError,
   } = useGraphQLQuery<PostResponse>(query2);
 
   useEffect(() => {
-    if (data) {
-      setAllUserData(data.data.usersCollection.edges);
+    if (resposeUserData) {
+      setAllUserData(resposeUserData.data.usersCollection.edges);
     }
-    if (data2) {
-      setAllPostData(data2.data.postsCollection.edges);
+    if (resposePostData) {
+      setAllPostData(resposePostData.data.postsCollection.edges);
     }
-    const posts = data2?.data.postsCollection.edges;
+    const posts = resposePostData?.data.postsCollection.edges;
 
     let count = 0;
 
@@ -140,26 +111,7 @@ const Home = (props: Props) => {
       }
     });
     setPostCount(count);
-  }, [data, data2]);
-
-  useEffect(() => {
-    if (postData?.[0]) {
-      const newPostNode = {
-        node: {
-          content: postData[0].content || "",
-          created_at: postData[0].created_at || "",
-          image_url: postData[0].image_url || "",
-          post_id: postData[0].post_id || "",
-          user_id: postData[0].user_id || "",
-        },
-      };
-      const updateAllPostData: PostResponse["postsCollection"]["edges"] = [
-        newPostNode,
-        ...allPostData,
-      ];
-      setAllPostData(updateAllPostData);
-    }
-  }, [postData]);
+  }, [resposeUserData, resposePostData]);
 
   const handleLogOut = async () => {
     let { error } = await supabase.auth.signOut();
@@ -174,42 +126,39 @@ const Home = (props: Props) => {
       },
       session: null,
     });
-    if(error){
-      
+    if (error) {
     }
   };
 
   return (
     <>
-      {loading ? (
-        "loading"
+      {userResponseLoader ? (
+        <div className="absolute h-full w-full flex items-center justify-center">
+          <Circles color="black" width={"20px"} height={"20px"} />
+        </div>
       ) : (
         <div
-          className="mx-20 flex flex-row gap-4 max-h-screen "
+          className="lg:mx-20 flex flex-row gap-1 "
           style={{ height: "100vh" }}
         >
-          {smallScreen && <SideNavBar smallScreen={smallScreen} />}
+          {smallScreen && <SideNavBar />}
           {!smallScreen && (
             <div className="w-3/6 flex flex-col items-center justify-start py-10">
               <Profile
                 posts={postCount}
                 username={userData.user.user_metadata.first_name}
               />
-              {loading ? (
-                "loading..."
+              {userResponseLoader ? (
+                <div className="absolute h-full w-full flex items-center justify-center">
+                  <Circles color="black" width={"20px"} height={"20px"} />
+                </div>
               ) : (
-                <Connection allUserData={allUserData} />
+                <Connection />
               )}
             </div>
           )}
-          <div className="mt-10 w-full flex flex-col items-start justify-start border-2 border-white rounded-lg bg-gray-50 bg-opacity-75 ">
-            <div
-              className="absolute bg-opacity-50 rounded-lg backdrop-blur-md"
-              style={{
-                width: "42%",
-                height: "55px",
-              }}
-            >
+          <div className="lg:mt-10 w-full flex flex-col items-start justify-start border border-grey-800 bg-gray-50 bg-opacity-75 ">
+            <div className="absolute bg-opacity-50 w-full  lg:w-[630px] rounded-lg backdrop-blur-md">
               <h1 className="text-xl font-semibold p-4">Home</h1>
             </div>
             {allPostData.length === 0 ? (
@@ -226,40 +175,40 @@ const Home = (props: Props) => {
                   scrollBehavior: "smooth",
                 }}
               >
-                {loading2
-                  ? "loading..."
-                  : allPostData.map((item) => {
-                      if (
-                        item.node.user_id === userData.user.id ||
-                        followData.some(
-                          (follow) => follow.user_id === item.node.user_id
-                        )
-                      ) {
-                        return (
-                          <PostCard
-                            key={item.node.post_id}
-                            caption={item.node.content}
-                            post_id={item.node.post_id}
-                            user_id={item.node.user_id}
-                            imageSrc={item.node.image_url}
-                            created_at={item.node.created_at}
-                          />
-                        );
-                      }
-                      return null;
-                    })}
+                {postResponseLoader ? (
+                  <div className="absolute h-full w-full flex items-center justify-center">
+                    <Circles color="black" width={"20px"} height={"20px"} />
+                  </div>
+                ) : (
+                  allPostData.map((item) => {
+                    if (
+                      item.node.user_id === userData.user.id ||
+                      followData.some(
+                        (follow) => follow.user_id === item.node.user_id
+                      )
+                    ) {
+                      return (
+                        <PostCard
+                          key={item.node.post_id}
+                          caption={item.node.content}
+                          post_id={item.node.post_id}
+                          user_id={item.node.user_id}
+                          imageSrc={item.node.image_url}
+                          created_at={item.node.created_at}
+                        />
+                      );
+                    }
+                    return null;
+                  })
+                )}
               </div>
             )}
           </div>
           {!smallScreen && (
             <div className="w-7/12 flex flex-col items-center justify-between py-10">
-              <CreatePost
-                setPostData={setPostData}
-                postData={postData}
-                setImageUrl={setImageUrl}
-              />
+              <CreatePost />
               <button
-                className="text-sm w-full cursor-pointer bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-lg shadow-gray-300 border-2 border-red-300"
+                className="text-sm cursor-pointer bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-lg shadow-gray-300 border-2 border-red-300"
                 onClick={handleLogOut}
               >
                 Logout

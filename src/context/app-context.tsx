@@ -1,45 +1,5 @@
 import { createContext } from "react";
-
-interface AppContextType {
-  dimensions: {
-    width: number;
-    height: number;
-  };
-  userData: {
-    user: {
-      id: string|null;
-      user_metadata: {
-        first_name: string|null;
-      };
-    };
-    session: object | null;
-  };
-  setUserData: React.Dispatch<React.SetStateAction<{
-    user: {
-      id: string|null;
-      user_metadata: {
-        first_name: string|null;
-      };
-    };
-    session: object | null;
-  }>>;
-  followData:{
-    user_id:string;
-    username:string;
-  }[];
-  setFollowData: React.Dispatch<React.SetStateAction<{
-    user_id:string;
-    username:string
-  }[]>>;
-  followersData:{
-    user_id:string;
-    username:string;
-  }[];
-  setFollowersData: React.Dispatch<React.SetStateAction<{
-    user_id:string;
-    username:string
-  }[]>>;
-}
+import { AppContextType,  } from "../types";
 
 const defaultContextValue: AppContextType = {
   dimensions: {
@@ -50,11 +10,15 @@ const defaultContextValue: AppContextType = {
     user: {id:null, user_metadata:{first_name:null}},
     session: null,
   },
+  allPostData:[],
+  allUserData:[],
   followData:[],
   followersData:[],
   setUserData: () => {}, 
   setFollowData:() => {},
   setFollowersData:() => {},
+  setAllPostData:() => {},
+  setAllUserData:() => {},
 };
 
 const AppContext = createContext<AppContextType>(defaultContextValue);

@@ -1,36 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import AppContext from "./app-context";
+import { AppContextProviderProps, UserData, PostResponse, Dimensions, UserResponse } from "../types";
 
-interface AppContextProviderProps {
-  children: React.ReactNode;
-}
-
-interface Dimensions {
-  width: number;
-  height: number;
-}
-
-interface UserData {
-  user: {
-    id: string|null;
-    user_metadata: {
-      first_name: string|null;
-    };
-  };
-  session: object | null;
-}
 
 const AppContextProvider: React.FC<AppContextProviderProps> = ({ children}) => {
   const [userData, setUserData] = useState<UserData>({
     user: {id:null, user_metadata:{first_name:null}},
     session: null
   });
-  const [followData, setFollowData] = useState<{user_id:string|""; username:string|""}[]>([]);
-  const [followersData, setFollowersData] = useState<{user_id:string|""; username:string|""}[]>([]);
-  const [dimensions, setDimensions] = useState<Dimensions>({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+  const [allPostData, setAllPostData] = useState<PostResponse["postsCollection"]["edges"] | []>([]);
+  const [allUserData, setAllUserData] = useState<UserResponse["usersCollection"]["edges"] | []>([]);
+  const [followData, setFollowData] = useState<{user_id:string|""; username:string|""; relationship_id: string}[]>([]);
+  const [followersData, setFollowersData] = useState<{user_id:string|""; username:string|""; relationship_id: string}[]>([]);
+  const [dimensions, setDimensions] = useState<Dimensions>({width: window.innerWidth, height: window.innerHeight,});
 
   const changeDimensionsHandler = useCallback(() => {
     setDimensions({
@@ -56,7 +38,11 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children}) => {
         followData,
         setFollowData,
         followersData,
-        setFollowersData
+        setFollowersData,
+        allPostData,
+        setAllPostData,
+        allUserData,
+        setAllUserData,
       }}
     >
     {children}

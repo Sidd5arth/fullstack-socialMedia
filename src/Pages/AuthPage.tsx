@@ -6,6 +6,7 @@ import AppContext from "../context/app-context";
 import { useNavigate } from "react-router";
 import { Circles } from "react-loader-spinner";
 import { supabase } from "../SupabaseClient";
+import { UserData } from "../types";
 
 interface FormData {
   loginEmail: string;
@@ -14,15 +15,6 @@ interface FormData {
   registerPassword: string;
   registerUsername: string;
   supabase: SupabaseClient;
-}
-interface UserData {
-  user: {
-    id: string | null;
-    user_metadata: {
-      first_name: string | null;
-    };
-  };
-  session: object | null;
 }
 
 const AuthPage: React.FC = () => {
@@ -75,9 +67,9 @@ const AuthPage: React.FC = () => {
         setUserData({
           user: {
             id: user.id,
-            user_metadata: { first_name: user.user_metadata.first_name },
+            user_metadata: { first_name: user.user_metadata.first_name }
           },
-          session: token,
+          session: token
         });
       } else {
         navigate("/Home", { replace: true });

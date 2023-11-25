@@ -8,19 +8,9 @@ body{
   margin: 0;
   box-sizing: border-box;
   height: 100vh;
-  background-image: url(../public/back5.jpg);
+  background-color:whitesmoke;
   background-size: cover;
   overflow: hidden;
   background-position: 10%;
 }
-body::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: -1;
-}
+

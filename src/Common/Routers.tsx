@@ -2,9 +2,7 @@ import React from "react";
 import { Links } from "./Links";
 import { Route, Routes } from "react-router-dom";
 
-type Props = {};
-
-const Routers = (props: Props) => {
+const Routers = () => {
   return (
     <>
       <Routes>
