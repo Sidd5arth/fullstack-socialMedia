@@ -2,7 +2,7 @@ import CreatePost from "../Components/CreatePost";
 import Profile from "../Components/ProfileComp/Profile";
 import AuthPage from "../Pages/AuthPage";
 import Home from "../Pages/Home";
-import ApiPage from "../Pages/ApiPage";
+// import ApiPage from "../Pages/ApiPage";
 
 export const Links = [
     {
@@ -29,10 +29,10 @@ export const Links = [
         element:<Profile/>,
         showInNavigation: true
     },
-    {
-        name:"apiPage",
-        path:"/apiPage",
-        element:<ApiPage/>,
-        showInNavigation: true
-    },
+    // {
+    //     name:"apiPage",
+    //     path:"/apiPage",
+    //     element:<ApiPage/>,
+    //     showInNavigation: true
+    // },
 ]
