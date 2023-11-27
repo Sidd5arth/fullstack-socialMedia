@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaRegHeart, FaHeart, FaUserTag, FaCommentAlt } from 'react-icons/fa';
 import { Circles } from "react-loader-spinner";
 
@@ -15,6 +15,13 @@ interface Props {
 const PostCard: React.FC<Props> = ({ imageSrc, caption, likes, taggedUsers }) => {
   const [showTaggedUsers, setShowTaggedUsers] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+
+  const manageLike = () => {
+  }
+
+  useEffect(() => {
+    manageLike();
+  }, [isLiked])
 
   return (
     <div className="w-full mx-auto p-4 border-2 rounded-lg my-4 border-white shadow-lg shadow-gray-200">

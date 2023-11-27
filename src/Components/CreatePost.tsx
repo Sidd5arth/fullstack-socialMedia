@@ -7,6 +7,8 @@ import { Circles } from "react-loader-spinner";
 import UserTagModal from "./UserTagModal";
 import SideNavBar from "./SideNavBar";
 import { PostResponse } from "../types";
+import { createPost } from "../queries";
+import { useNavigate } from "react-router";
 
 interface PostMutate {
   insertIntopostsCollection: {
@@ -23,7 +25,7 @@ interface PostMutate {
 }
 
 const CreatePost: React.FC = () => {
-  const { userData, followData, allPostData, setAllPostData } = useContext(AppContext);
+  const { userData, followData, allPostData, setAllPostData, dimensions } = useContext(AppContext);
   const [image, setImage] = useState<File | null>();
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -39,6 +41,8 @@ const CreatePost: React.FC = () => {
       user_id: string | "";
     }[]
   >([]);
+
+const navigate = useNavigate();
 
   useEffect(() => {
     if (postData?.[0]) {
@@ -58,6 +62,12 @@ const CreatePost: React.FC = () => {
       setAllPostData(updateAllPostData);
     }
   }, [postData]);
+
+  useEffect(() => {
+    if(dimensions.width > 780){
+      navigate("/Home")
+    }
+  },[dimensions.width > 780])
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -104,26 +114,13 @@ const CreatePost: React.FC = () => {
   useEffect(() => {
     const postImgData = async () => {
       if (uploadResponse) {
-        const mutation = `
-          mutation InsertPost($userId: UUID!, $content: String!, $imageUrl: String!) {
-            insertIntopostsCollection(objects: [{ user_id: $userId, content: $content, image_url: $imageUrl }]) {
-              affectedCount
-              records {
-                post_id
-                user_id
-                content
-                image_url
-                created_at
-              }
-            }
-          }
-        `;
+
 
         const userId = userData.user.id;
         const content = postText;
         const imageUrl = uploadResponse;
 
-        await executeMutation(mutation, { userId, content, imageUrl });
+        await executeMutation(createPost, { userId, content, imageUrl });
         setImage(null);
         setPostText("");
       }
@@ -148,7 +145,7 @@ const CreatePost: React.FC = () => {
   };
 
   return (
-    <div className="w-full mx-auto p-4 border border-grey-800 bg-gray-50 bg-opacity-70 shadow-lg shadow-gray-200">
+    <div className="md:w-full w-min mx-auto p-4 border border-grey-800 bg-gray-50 bg-opacity-70 shadow-lg shadow-gray-200">
       <h2 className="text-xl font-semibold mb-4">Create a Post</h2>
       <textarea
         className="resize-none w-full h-20 p-2 mb-4 border-2 border-white bg-gray-50 bg-opacity-50 rounded-lg shadow-md shadow-gray-200"

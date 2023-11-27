@@ -48,21 +48,22 @@ const UserCard: React.FC<Props> = ({
     };
     setSelectedCard(cardSelect);
     const mutation = `
-    mutation InsertFollower($followerId: UUID!, $userId: UUID!) {
-        insertIntofollowersCollection(objects: [{ follower_id: $followerId, user_id: $userId }]) {
+    mutation DeleteFollower($relationshipId: UUID!) {
+        deleteFromfollowersCollection(objects: [{ relationship_id: $relationshipId }]) {
           affectedCount
           records {
-            follower_id
-            user_id
+            relationship_id
           }
         }
       }      
   `;
 
-    const userId = userData.user.id;
-    const followerId = user_id;
+    // const userId = userData.user.id;
+    // const followerId = user_id;
+    const relationshipId = relationship_id;
+    console.log(relationship_id);
  
-    await executeMutation(mutation, { followerId, userId });
+    await executeMutation(mutation, { relationshipId });
   };
 
   const handleUnFollowClick = async () => {

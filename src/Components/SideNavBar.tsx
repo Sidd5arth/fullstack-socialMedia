@@ -8,7 +8,7 @@ const handleNavigation = (path: string) => {
   navigate(path);
 };
   return (
-    <nav style={{zIndex:"100"}} className={"absolute w-60 rounded-lg border-white border shadow-lg bg-blue-100 transform bottom-8 left-24 bg-opacity-50 backdrop-blur-md" }>
+    <nav style={{zIndex:"100"}} className={"mb-3 w-60 rounded-lg mx-auto border-white border shadow-lg bg-blue-100 transform bg-opacity-50 backdrop-blur-md" }>
       <ul className="flex gap-8 p-2 justify-center align-middle ">
         <li onClick={() => handleNavigation("/Home")} className="text-sm hover:text-white cursor-pointer p-2 bg-opacity-50 hover:bg-blue-500 rounded-lg transition-all">
           <RiHome2Line size={18} />

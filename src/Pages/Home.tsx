@@ -11,7 +11,7 @@ import AppContext from "../context/app-context";
 import { supabase } from "../SupabaseClient";
 import { PostResponse, UserResponse } from "../types";
 import { Circles } from "react-loader-spinner";
-
+import { getUser, getPost } from "../queries";
 const Home = () => {
   const {
     userData,
@@ -27,7 +27,6 @@ const Home = () => {
   const [imageUrl, setImageUrl] = useState<string>();
   const [isOpenPost, setIsOpenPost] = useState(false);
   const [loadingHome, setLoadingHome] = useState<boolean>(false);
-  const [postCount, setPostCount] = useState<number>(0);
   const [smallScreen, setSmallScreen] = useState<boolean>(
     dimensions.width < 600
   );
@@ -55,44 +54,17 @@ const Home = () => {
     }
   }, [smallScreen, isOpen]);
 
-  const query = `
-    {
-      usersCollection {
-        edges {
-          node {
-            user_id
-            username
-          }
-        }
-      }
-    }
-  `;
-  const query2 = `
-  {
-    postsCollection(orderBy: [{ created_at: DescNullsFirst }]) {
-      edges {
-        node {
-          user_id
-          post_id
-          created_at
-          content
-          image_url
-        }
-      }
-    }
-  }
-  `;
 
   const {
     data: resposeUserData,
     loading: userResponseLoader,
     error: userResposeError,
-  } = useGraphQLQuery<UserResponse>(query);
+  } = useGraphQLQuery<UserResponse>(getUser);
   const {
     data: resposePostData,
     loading: postResponseLoader,
     error: postResposeError,
-  } = useGraphQLQuery<PostResponse>(query2);
+  } = useGraphQLQuery<PostResponse>(getPost);
 
   useEffect(() => {
     if (resposeUserData) {
@@ -101,16 +73,6 @@ const Home = () => {
     if (resposePostData) {
       setAllPostData(resposePostData.data.postsCollection.edges);
     }
-    const posts = resposePostData?.data.postsCollection.edges;
-
-    let count = 0;
-
-    posts?.map((item) => {
-      if (item.node.user_id === userData.user.id) {
-        count++;
-      }
-    });
-    setPostCount(count);
   }, [resposeUserData, resposePostData]);
 
   const handleLogOut = async () => {
@@ -138,16 +100,15 @@ const Home = () => {
         </div>
       ) : (
         <div
-          className="lg:mx-20 flex flex-row gap-1 "
+          className="lg:mx-20 flex flex-row gap-1 align-middle justify-center "
           style={{ height: "100vh" }}
         >
-          {smallScreen && <SideNavBar />}
+          {smallScreen && <div className="w-full absolute flex bottom-0">
+            <SideNavBar />
+            </div>}
           {!smallScreen && (
             <div className="w-3/6 flex flex-col items-center justify-start py-10">
-              <Profile
-                posts={postCount}
-                username={userData.user.user_metadata.first_name}
-              />
+              <Profile />
               {userResponseLoader ? (
                 <div className="absolute h-full w-full flex items-center justify-center">
                   <Circles color="black" width={"20px"} height={"20px"} />
@@ -158,7 +119,7 @@ const Home = () => {
             </div>
           )}
           <div className="lg:mt-10 w-full flex flex-col items-start justify-start border border-grey-800 bg-gray-50 bg-opacity-75 ">
-            <div className="absolute bg-opacity-50 w-full  lg:w-[630px] rounded-lg backdrop-blur-md">
+            <div className="bg-opacity-50 w-full rounded-lg backdrop-blur-md">
               <h1 className="text-xl font-semibold p-4">Home</h1>
             </div>
             {allPostData.length === 0 ? (
@@ -168,7 +129,7 @@ const Home = () => {
               </div>
             ) : (
               <div
-                className="w-full overflow-y-auto h-full p-4 scroll-smooth mt-9"
+                className="w-full overflow-y-auto h-full p-4 scroll-smooth mt-2"
                 style={{
                   scrollbarWidth: "thin",
                   scrollbarColor: "#dddddd #ffffff",

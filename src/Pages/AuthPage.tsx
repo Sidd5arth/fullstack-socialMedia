@@ -34,18 +34,6 @@ const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const {data:{subscription}} = supabase.auth.onAuthStateChange((event, session) => {
-  //     if (event === "SIGNED_OUT") {
-  //       navigate("/AuthPage", { replace: true });
-  //     }
-  //   });
-
-  //       // Clean up the listener when the component unmounts
-  //       return () => {
-  //         subscription?.unsubscribe();
-  //       };
-  // }, []);
 
   const checkAuthentication = useCallback(async () => {
     if (
@@ -98,10 +86,6 @@ const AuthPage: React.FC = () => {
   }, [userData.user.id, userData.session]);
 
   checkAuthentication();
-
-  // useEffect(() => {
-  //   checkAuthentication();
-  // }, [checkAuthentication]);
 
   const onSubmit = async (val: FormData) => {
     try {
