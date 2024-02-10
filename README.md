@@ -3,6 +3,15 @@
 
 ## PASSWORD - abcgamil
 
+## Techstack
+### React, typeScript, tailwind CSS
+
+## Testing (unit and E2E)
+### Jest and cypress
+
+## Android App
+### Capacitor
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
