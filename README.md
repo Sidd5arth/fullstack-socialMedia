@@ -3,14 +3,14 @@
 
 ## PASSWORD - abcgamil
 
-## Techstack
-### React, typeScript, tailwind CSS
+### Techstack
+React, typeScript, tailwind CSS
 
-## Testing (unit and E2E)
-### Jest and cypress
+### Testing (unit and E2E)
+Jest and cypress
 
-## Android App
-### Capacitor
+### Android App
+Capacitor
 
 # Getting Started with Create React App
 
