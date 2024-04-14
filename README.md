@@ -4,7 +4,7 @@
 ## PASSWORD - abcgamil
 
 ### Techstack
-React, typeScript, tailwind CSS, Supabase
+React, typeScript, tailwind CSS, Supabase - GraphQL
 
 # Getting Started with Create React App
 
